@@ -1,46 +1,36 @@
 let player;
 let obstacles = [];
 
+function computeNextX() {
+  return obstacles.reduce(
+    (sum, obstacle) => sum + obstacle.w + player.w,
+    Math.floor(width / 5) - 1
+  );
+}
+
 function setup() {
   createCanvas(innerWidth, innerHeight);
-  player = new Player(width / 2, height - 50, 50, 50);
+  player = new Player(25, 0, 50, 50);
   obstacles.push(
-    new Obstacle(width / 3, height - player.h * 2 - 100, 100, 150)
-  );
-
-  obstacles.push(
-    new Obstacle(
-      obstacles.reduce(
-        (sum, obstacle) => sum + obstacle.w + player.w,
-        width / 3
-      ),
-      height - player.h * 2 - 300
-    )
+    new Obstacle(computeNextX(), height - player.h * 2 - 100, 100, 150)
   );
   obstacles.push(
-    new Obstacle(
-      obstacles.reduce(
-        (sum, obstacle) => sum + obstacle.w + player.w,
-        width / 3
-      ),
-      height - player.h * 2 - 300
-    )
+    new Obstacle(computeNextX(), height - player.h * 2 - 250, 100, 200)
   );
   obstacles.push(
-    new Obstacle(
-      obstacles.reduce(
-        (sum, obstacle) => sum + obstacle.w + player.w,
-        width / 3
-      ),
-      height - player.h * 2 - 100,
-      100,
-      150
-    )
+    new Obstacle(computeNextX(), height - player.h * 2 - 100, 100, 150)
   );
-
-  //   for (let i = 0; i < 5; i++) {
-  //     obstacles.push(new Obstacle());
-  //   }
+  obstacles.push(new Obstacle(computeNextX(), height - player.h * 2 - 300));
+  obstacles.push(new Obstacle(computeNextX(), height - player.h * 2 - 300));
+  obstacles.push(
+    new Obstacle(computeNextX(), height - player.h * 2 - 100, 100, 150)
+  );
+  obstacles.push(
+    new Obstacle(computeNextX(), height - player.h * 2 - 250, 100, 200)
+  );
+  obstacles.push(
+    new Obstacle(computeNextX(), height - player.h * 2 - 100, 100, 150)
+  );
 }
 
 function draw() {
@@ -55,7 +45,6 @@ function draw() {
 
 function keyPressed() {
   if (keyCode === UP_ARROW && player.isOnGround()) {
-    console.log("Trying to jump!");
     player.velY -= 20;
   }
 }

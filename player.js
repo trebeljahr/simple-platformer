@@ -20,10 +20,8 @@ class Player extends Rectangle {
     this.y += this.velY;
     obstacles.forEach((obstacle) => this.handleCollisionsInY(obstacle));
 
-    // constrain y so player "lands" on ground.
     this.y = Math.min(this.y, height - this.h);
 
-    // update velocity to "fall"
     if (this.isOnGround()) {
       this.velY = 0;
     } else {
