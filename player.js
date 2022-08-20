@@ -14,23 +14,11 @@ class Player extends Rectangle {
       player.velX = 0;
     }
 
-    const collidingObstacles = obstacles.filter((obstacle) => {
-      return obstacle.collidesWith(this);
-    });
-
     this.x += this.velX;
+    obstacles.forEach((obstacle) => this.handleCollisionsInX(obstacle));
+
     this.y += this.velY;
-
-    collidingObstacles.forEach((obstacle) => this.handleCollisions(obstacle));
-
-    // if (collidingObstacles.length) {
-    //   if (this.getYDirection() !== 0) {
-    //     this.velY = 0;
-    //   }
-    //   if (this.getXDirection() !== 0) {
-    //     this.velX = 0;
-    //   }
-    // }
+    obstacles.forEach((obstacle) => this.handleCollisionsInY(obstacle));
 
     // constrain y so player "lands" on ground.
     this.y = Math.min(this.y, height - this.h);
@@ -63,29 +51,22 @@ class Player extends Rectangle {
     }
   }
 
-  handleCollisions(obj) {
-    if (!this.collidesWith(obj)) return;
-
-    while (this.collidesInXWith(obj)) {
-      const xDir = this.getXDirection();
-      this.x -= xDir;
-      if (xDir === 0) {
-        break;
-      }
-    }
-
-    if (!this.collidesWith(obj)) return;
-
+  handleCollisionsInY(obj) {
+    const yDir = this.getYDirection();
+    if (!this.collidesWith(obj) || yDir === 0) return;
     while (this.collidesInYWith(obj)) {
-      const yDir = this.getYDirection();
-      if (yDir === 0) {
-        break;
-      }
       this.y -= yDir;
     }
     this.velY = 0;
+  }
 
-    // console.log("Reached after first while loop");
+  handleCollisionsInX(obj) {
+    const xDir = this.getXDirection();
+    if (!this.collidesWith(obj) || xDir === 0) return;
+    while (this.collidesInXWith(obj)) {
+      this.x -= xDir;
+    }
+    this.velX = 0;
   }
 
   draw() {
