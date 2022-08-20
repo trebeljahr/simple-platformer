@@ -4,9 +4,43 @@ let obstacles = [];
 function setup() {
   createCanvas(innerWidth, innerHeight);
   player = new Player(width / 2, height - 50, 50, 50);
-  for (let i = 0; i < 30; i++) {
-    obstacles.push(new Obstacle());
-  }
+  obstacles.push(
+    new Obstacle(width / 3, height - player.h * 2 - 100, 100, 150)
+  );
+
+  obstacles.push(
+    new Obstacle(
+      obstacles.reduce(
+        (sum, obstacle) => sum + obstacle.w + player.w,
+        width / 3
+      ),
+      height - player.h * 2 - 300
+    )
+  );
+  obstacles.push(
+    new Obstacle(
+      obstacles.reduce(
+        (sum, obstacle) => sum + obstacle.w + player.w,
+        width / 3
+      ),
+      height - player.h * 2 - 300
+    )
+  );
+  obstacles.push(
+    new Obstacle(
+      obstacles.reduce(
+        (sum, obstacle) => sum + obstacle.w + player.w,
+        width / 3
+      ),
+      height - player.h * 2 - 100,
+      100,
+      150
+    )
+  );
+
+  //   for (let i = 0; i < 5; i++) {
+  //     obstacles.push(new Obstacle());
+  //   }
 }
 
 function draw() {

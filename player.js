@@ -6,21 +6,6 @@ class Player extends Rectangle {
   }
 
   move() {
-    const collidingObstacle = obstacles.find((obstacle) => {
-      return obstacle.collidesWith(this);
-    });
-
-    if (collidingObstacle) {
-      this.handleCollisions(collidingObstacle);
-      if (this.getYDirection() !== 0) {
-        this.velY = 0;
-      }
-
-      if (this.getXDirection() !== 0) {
-        this.velX = 0;
-      }
-    }
-
     if (keyIsDown(LEFT_ARROW)) {
       player.velX = -5;
     } else if (keyIsDown(RIGHT_ARROW)) {
@@ -29,11 +14,26 @@ class Player extends Rectangle {
       player.velX = 0;
     }
 
+    const collidingObstacles = obstacles.filter((obstacle) => {
+      return obstacle.collidesWith(this);
+    });
+
     this.x += this.velX;
     this.y += this.velY;
 
+    collidingObstacles.forEach((obstacle) => this.handleCollisions(obstacle));
+
+    // if (collidingObstacles.length) {
+    //   if (this.getYDirection() !== 0) {
+    //     this.velY = 0;
+    //   }
+    //   if (this.getXDirection() !== 0) {
+    //     this.velX = 0;
+    //   }
+    // }
+
     // constrain y so player "lands" on ground.
-    this.y = constrain(this.y, 0, height - this.h);
+    this.y = Math.min(this.y, height - this.h);
 
     // update velocity to "fall"
     if (this.isOnGround()) {
@@ -64,13 +64,28 @@ class Player extends Rectangle {
   }
 
   handleCollisions(obj) {
-    while (this.collidesWith(obj)) {
-      const xDir = this.getXDirection();
-      const yDir = this.getYDirection();
+    if (!this.collidesWith(obj)) return;
 
+    while (this.collidesInXWith(obj)) {
+      const xDir = this.getXDirection();
       this.x -= xDir;
+      if (xDir === 0) {
+        break;
+      }
+    }
+
+    if (!this.collidesWith(obj)) return;
+
+    while (this.collidesInYWith(obj)) {
+      const yDir = this.getYDirection();
+      if (yDir === 0) {
+        break;
+      }
       this.y -= yDir;
     }
+    this.velY = 0;
+
+    // console.log("Reached after first while loop");
   }
 
   draw() {
@@ -80,11 +95,7 @@ class Player extends Rectangle {
 
   isOnObstacle() {
     const obstacle = obstacles.find((obstacle) => {
-      return (
-        this.x < obstacle.x + obstacle.w &&
-        this.x + this.w > obstacle.x &&
-        obstacle.y === this.y + this.h
-      );
+      return this.collidesInXWith(obstacle) && obstacle.y === this.y + this.h;
     });
     return obstacle;
   }

@@ -1,10 +1,9 @@
 class Obstacle extends Rectangle {
-  constructor() {
-    const w = 100;
-    const h = 50;
+  constructor(x, y, w = 100, h = 300) {
+    console.log(x, y);
     super(
-      Math.floor(random(0, width - w)),
-      Math.floor(random(0, height - player.h - h)),
+      x || Math.floor(random(0, width - w)),
+      y || Math.floor(random(0, height - player.h - h)),
       w,
       h
     );
